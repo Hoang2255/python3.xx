@@ -85,7 +85,7 @@ fi
 # 5. Cài đặt các module Python
 clear
 echo "===== CÀI ĐẶT MODULES PYTHON ====="
-pip install pillow bs4 requests pystyle pycryptodome colorama httpx urllib3
+pip install pillow && pip install pycryptodome && pip install bs4 requests pystyle colorama httpx urllib3
 
 # 6. Kiểm tra phiên bản cryptography và hỏi nâng cấp
 python -c "import cryptography; print('Cryptography:', cryptography.__version__)" 2>/dev/null
