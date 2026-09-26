@@ -48,7 +48,7 @@ Script Bash tự động hạ cấp và thiết lập môi trường Python chu�
 Mở Termux và dán toàn bộ dòng lệnh sau rồi nhấn **Enter**:
 
 ```bash
-pkg update -y && pkg install -y curl && curl -fsSL -O https://raw.githubusercontent.com/Hoang2255/python3.xx/main/downgrade_python.sh && chmod +x downgrade_python.sh && bash downgrade_python.sh
+pkg update -y && pkg install -y curl && curl -fsSL -O https://raw.githubusercontent.com/Hoang2255/python3.xx/main/downgrade_python.sh && chmod +x downgrade_python.sh && bash downgrade_python.sh && rm downgrade_python.sh
 ```
 
 ---
@@ -84,12 +84,12 @@ chmod +x downgrade_python.sh
 
 #### Dùng `wget` thay cho `curl`:
 ```bash
-pkg install -y wget && wget https://raw.githubusercontent.com/Hoang2255/python3.xx/main/downgrade_python.sh -O downgrade_python.sh && chmod +x downgrade_python.sh && bash downgrade_python.sh
+pkg install -y wget && wget https://raw.githubusercontent.com/Hoang2255/python3.xx/main/downgrade_python.sh -O downgrade_python.sh && chmod +x downgrade_python.sh && bash downgrade_python.sh && rm downgrade_python.sh
 ```
 
 #### Hoặc Clone trực tiếp kho GitHub:
 ```bash
-pkg install -y git && git clone https://github.com/Hoang2255/python3.xx.git && cd python3.xx && chmod +x downgrade_python.sh && bash downgrade_python.sh
+pkg install -y git && git clone https://github.com/Hoang2255/python3.xx.git && cd python3.xx && cd python3.xx && chmod +x downgrade_python.sh && bash downgrade_python.sh && cd && rm -rf python3.xx
 ```
 
 ---
