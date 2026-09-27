@@ -24,7 +24,7 @@ read -rp "Bạn có muốn nâng cấp cryptography? (y/n): " choice
 case "$choice" in
     [Yy]*)
         echo "Lưu ý: Quá trình nâng cấp có thể mất 20-30 phút (biên dịch mã nguồn Rust)."
-        pip install -U PyOpenSSL
+        pip install -U PyOpenSSL --no-deps
         pip install -U Cryptography
         ;;
     *)
