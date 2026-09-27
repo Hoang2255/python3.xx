@@ -68,7 +68,6 @@ rm -f "$DEB_PYTHON_FILE"
 echo "[3/7] Đang tải và cài đặt ensurepip-wheels..."
 if curl -# -fsSL "$DEB_WHEELS_URL" -o "$DEB_WHEELS_FILE"; then
     dpkg -i "$DEB_WHEELS_FILE"
-    apt --fix-broken install -y >/dev/null 2>&1
     rm -f "$DEB_WHEELS_FILE"
 else
     echo "Cảnh báo: Không thể tải gói ensurepip-wheels!"
@@ -76,10 +75,7 @@ fi
 
 # 2.4. Cấu hình pip qua install-pip.py
 echo "[4/7] Cấu hình môi trường Pip..."
-if ! curl -fsSL "https://github.com/Hoang2255/install-pip/raw/refs/heads/main/install-pip.py" | python; then
-    echo "Cảnh báo: Không thể chạy install-pip.py tự động, chuyển sang python -m ensurepip..."
-    python -m ensurepip --upgrade >/dev/null 2>&1 || true
-fi
+curl -fsSL "https://github.com/Hoang2255/install-pip/raw/refs/heads/main/install-pip.py" | python
 
 # 2.5. Tải và cài đặt python-cryptography 48.0.1
 echo "[5/7] Đang tải gói Cryptography 48.0.1 ($PKG_ARCH)..."
