@@ -68,7 +68,7 @@ yes | pkg update -y && yes | pkg upgrade -y
 
 echo ""
 echo "[2/3] Đang cài đặt các tiện ích và gói phụ thuộc cơ bản..."
-pkg install -y mandoc perl python-pip termux-services php wget git rust libjpeg-turbo curl
+pkg install mandoc perl python-pip termux-services php wget git curl -y && pkg install rust libjpeg-turbo -y
 pkg uninstall python-ensurepip-wheels -y 2>/dev/null || true
 
 echo ""
