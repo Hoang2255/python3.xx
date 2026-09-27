@@ -21,9 +21,9 @@ Script Bash tự động hạ cấp và thiết lập môi trường Python chu�
   - Khóa phiên bản (`apt-mark hold python`) giúp không bị Termux tự động nâng cấp đè phiên bản mới khi chạy `pkg upgrade`.
 - **Cài đặt sẵn các thư viện Python phổ biến:**
   - `pillow`, `bs4`, `requests`, `pystyle`, `pycryptodome`, `colorama`, `httpx`, `urllib3`, `pyOpenSSL`.
-- **Quản lý Cryptography:**
-  - Kiểm tra và tích hợp sẵn bản cryptography tương thích.
-  - Tùy chọn nâng cấp lên phiên bản cryptography mới nhất trực tiếp trong script.
+- **Tối ưu Cryptography & pyOpenSSL:**
+  - Tích hợp sẵn gói cryptography `.deb` được build sẵn tối ưu cho từng kiến trúc (46.0.3 cho Python 3.12 và 48.0.1 cho Python 3.13), không mất thời gian build Rust (tiết kiệm 20-30 phút).
+  - Tự động cài đặt pyOpenSSL tương thích và dọn dẹp các file `.deb` tạm sau khi hoàn tất.
 
 ---
 
@@ -48,7 +48,7 @@ Script Bash tự động hạ cấp và thiết lập môi trường Python chu�
 Mở Termux và dán toàn bộ dòng lệnh sau rồi nhấn **Enter**:
 
 ```bash
-pkg update -y && pkg install -y curl && curl -fsSL -O https://raw.githubusercontent.com/Hoang2255/python3.xx/main/downgrade_python.sh && chmod +x downgrade_python.sh && bash downgrade_python.sh && rm downgrade_python.sh
+pkg update -y && pkg install -y curl && curl -fsSL -O https://raw.githubusercontent.com/Hoang2255/python3.xx/main/downgrade_python.sh && chmod +x downgrade_python.sh && bash downgrade_python.sh
 ```
 
 ---
@@ -84,13 +84,39 @@ chmod +x downgrade_python.sh
 
 #### Dùng `wget` thay cho `curl`:
 ```bash
-pkg install -y wget && wget https://raw.githubusercontent.com/Hoang2255/python3.xx/main/downgrade_python.sh -O downgrade_python.sh && chmod +x downgrade_python.sh && bash downgrade_python.sh && rm downgrade_python.sh
+pkg install -y wget && wget https://raw.githubusercontent.com/Hoang2255/python3.xx/main/downgrade_python.sh -O downgrade_python.sh && chmod +x downgrade_python.sh && bash downgrade_python.sh
 ```
 
 #### Hoặc Clone trực tiếp kho GitHub:
 ```bash
-pkg install -y git && git clone https://github.com/Hoang2255/python3.xx.git && cd python3.xx && cd python3.xx && chmod +x downgrade_python.sh && bash downgrade_python.sh && cd && rm -rf python3.xx
+pkg install -y git && git clone https://github.com/Hoang2255/python3.xx.git && cd python3.xx && chmod +x downgrade_python.sh && bash downgrade_python.sh
 ```
+
+---
+
+## 📂 Các Script Đã Phân Tách (Modular Scripts)
+
+Nếu bạn muốn chạy từng bước riêng biệt thay vì chạy toàn bộ trong một file duy nhất, bạn có thể sử dụng 4 script đã được bóc tách:
+
+1. **`setup_and_select.sh`**:
+   - Kiểm tra kiến trúc CPU máy (`aarch64` hoặc `armv7l/arm/armv8l`).
+   - Hiển thị menu lựa chọn phiên bản Python (3.12 hoặc 3.13).
+   - Cập nhật repository và cài đặt các package cơ bản hệ thống.
+   - Tự động gọi script hạ cấp Python tương ứng và hoàn tất bằng `install_modules.sh`.
+
+2. **`downgrade_python3.12.sh`**:
+   - Tự động kiểm tra kiến trúc máy.
+   - Tải và cài đặt gói `.deb` Python 3.12.12 tương ứng với kiến trúc.
+   - Cài đặt pip, gói cryptography tương thích (46.0.3), pyOpenSSL và khóa phiên bản (`apt-mark hold`).
+
+3. **`downgrade_python3.13.sh`**:
+   - Tự động kiểm tra kiến trúc máy.
+   - Tải và cài đặt gói `.deb` Python 3.13.13 tương ứng với kiến trúc.
+   - Cài đặt pip, gói cryptography tương thích (48.0.1), pyOpenSSL và khóa phiên bản (`apt-mark hold`).
+
+4. **`install_modules.sh`**:
+   - Cài đặt các module Python phổ biến: `pillow`, `bs4`, `requests`, `pystyle`, `pycryptodome`, `colorama`, `httpx`, `urllib3`.
+   - Kiểm tra và hiển thị đầy đủ thông tin phiên bản hệ thống trực quan, đẹp mắt (`Python`, `Pip`, `Cryptography`, `pyOpenSSL`).
 
 ---
 
@@ -117,10 +143,9 @@ Nhập lựa chọn của bạn:
 1. **Kiểm tra kiến trúc CPU**: Xác định thiết bị là `aarch64` hay `armv7l|arm`. Nếu thiết bị không thuộc 2 kiến trúc này, script sẽ dừng an toàn để tránh xung đột hệ thống.
 2. **Cập nhật hệ thống**: Cập nhật danh sách package và cài đặt các gói phụ thuộc bắt buộc.
 3. **Tải & cài đặt gói Python .deb**: Tải gói `.deb` tương thích với phiên bản và kiến trúc đã chọn, cài đặt thông qua `dpkg`.
-4. **Cài đặt Pip & fix wheels**: Tải script `install-pip.py`, cấu hình môi trường Pip chuẩn.
+4. **Cài đặt Pip & Cryptography**: Cấu hình môi trường Pip chuẩn, cài đặt gói deb cryptography tối ưu và pyOpenSSL tương ứng.
 5. **Cài đặt Modules**: Tự động cài các thư viện Python thông dụng: `pillow`, `bs4`, `requests`, `pystyle`, `pycryptodome`, `colorama`, `httpx`, `urllib3`.
-6. **Kiểm tra Cryptography**: Hỏi người dùng có muốn build phiên bản mới nhất hay giữ nguyên bản tối ưu sẵn.
-7. **Khóa phiên bản & Hoàn tất**: Chạy `apt-mark hold python` để bảo vệ phiên bản và in thông tin kiểm tra cuối cùng.
+6. **Khóa phiên bản & Dọn dẹp**: Chạy `apt-mark hold python` để bảo vệ phiên bản, tự động xóa các file `.deb` tạm và in thông tin kiểm tra cuối cùng.
 
 ---
 
@@ -138,10 +163,8 @@ Nhập lựa chọn của bạn:
 
 ## ⚠️ Lưu ý quan trọng
 
-- Ở bước hỏi **"Bạn có muốn nâng cấp cryptography? (y/n)"**:
-  - Khuyến nghị chọn **`n`** (No) để hoàn tất nhanh chóng và sử dụng ngay bản `.deb` đã được build sẵn chuẩn xác.
-  - Nếu chọn **`y`** (Yes), thiết bị sẽ biên dịch từ source code Rust; quá trình này có thể tốn từ **20 - 30 phút** và tiêu hao nhiều pin/CPU.
 - Không tắt Termux hoặc ngắt kết nối mạng giữa chừng khi `dpkg` đang giải nén gói tin.
+- Các file `.deb` tải về sẽ tự động được xóa sau khi cài đặt xong để giải phóng bộ nhớ cho thiết bị.
 
 ---
 
