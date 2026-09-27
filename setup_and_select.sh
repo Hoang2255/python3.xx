@@ -16,7 +16,7 @@ echo "===== KIỂM TRA KIẾN TRÚC MÁY ====="
 echo "Kiến trúc máy hiện tại: $ARCH"
 
 case "$ARCH" in
-    aarch64|armv7l|arm)
+    aarch64|armv7l|arm|armv8l)
         echo "Kiến trúc hợp lệ: $ARCH"
         ;;
     *)
@@ -109,8 +109,48 @@ if [ -n "$TARGET_RUN" ] && [ -f "$TARGET_RUN" ]; then
     chmod +x "$TARGET_RUN"
     echo "Khởi chạy script: $TARGET_RUN..."
     echo ""
-    bash "$TARGET_RUN"
+    if ! bash "$TARGET_RUN"; then
+        echo ""
+        echo "Lỗi: Quá trình hạ cấp Python $SELECTED_VERSION thất bại!"
+        exit 1
+    fi
 else
     echo "Lỗi: Không tìm thấy và không thể tải $SCRIPT_NAME từ GitHub!"
+    exit 1
+fi
+
+# 5. Tự động chuyển tiếp tới cài đặt modules Python
+echo ""
+echo "===== TIẾN TỚI CÀI ĐẶT MODULES PYTHON ====="
+
+MODULES_SCRIPT="install_modules.sh"
+MODULES_URL="https://raw.githubusercontent.com/Hoang2255/python3.xx/refs/heads/main/install_modules.sh"
+MODULES_RUN=""
+
+# 5.1. Ưu tiên kiểm tra file install_modules.sh có sẵn trên máy
+if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/$MODULES_SCRIPT" ]; then
+    MODULES_RUN="$SCRIPT_DIR/$MODULES_SCRIPT"
+elif [ -f "./$MODULES_SCRIPT" ]; then
+    MODULES_RUN="./$MODULES_SCRIPT"
+fi
+
+# 5.2. Nếu chưa có trên máy, tự động tải từ GitHub
+if [ -z "$MODULES_RUN" ]; then
+    echo "Không tìm thấy $MODULES_SCRIPT trên máy, đang tải từ GitHub..."
+    echo "URL: $MODULES_URL"
+    TARGET_MODULES_PATH="${SCRIPT_DIR:-.}/$MODULES_SCRIPT"
+    if curl -# -fsSL "$MODULES_URL" -o "$TARGET_MODULES_PATH"; then
+        MODULES_RUN="$TARGET_MODULES_PATH"
+    fi
+fi
+
+# 5.3. Khởi chạy script cài đặt modules
+if [ -n "$MODULES_RUN" ] && [ -f "$MODULES_RUN" ]; then
+    chmod +x "$MODULES_RUN"
+    echo "Khởi chạy script cài đặt modules: $MODULES_RUN..."
+    echo ""
+    bash "$MODULES_RUN"
+else
+    echo "Lỗi: Không tìm thấy và không thể tải $MODULES_SCRIPT từ GitHub!"
     exit 1
 fi
