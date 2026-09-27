@@ -11,7 +11,7 @@ echo ""
 echo "===== CÀI ĐẶT MODULES PYTHON ====="
 echo "Đang cài đặt: pillow, bs4, requests, pystyle, pycryptodome, colorama, httpx, urllib3..."
 hash -r 2>/dev/null || true
-pip install pillow bs4 requests pystyle pycryptodome colorama httpx urllib3
+pip install pillow bs4 pycurl requests pystyle pyotp pycryptodome python-telegram-bot psutil lxml colorama httpx urllib3
 
 # Màu sắc hiển thị
 GREEN='\033[0;32m'
