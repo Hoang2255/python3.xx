@@ -166,6 +166,8 @@ else
     printf "  ${BOLD}• Cryptography :${NC} ${RED}%s${NC}\n" "$CRYPTO_VER"
 fi
 
+OPENSSL_VER=$(python -c "import importlib.metadata as m; print(m.version('pyOpenSSL'))" 2>/dev/null || echo "Chưa cài đặt")
+
 if [ "$OPENSSL_VER" != "Chưa cài đặt" ]; then
     printf "  ${BOLD}• pyOpenSSL    :${NC} ${GREEN}%s${NC}\n" "$OPENSSL_VER"
 else
