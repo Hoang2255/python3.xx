@@ -22,6 +22,7 @@ pip --version 2>&1 || true
 python -c "import cryptography; print('Cryptography:', cryptography.__version__)" 2>/dev/null || echo "Cryptography: Chưa được cài đặt"
 python -c "import OpenSSL; print('pyOpenSSL:', OpenSSL.__version__)" 2>/dev/null || true
 
+clear
 echo ""
 echo "=================================================="
 echo "Cài đặt hoàn tất! Script được tối ưu bởi HoangPC"
