@@ -45,7 +45,6 @@ curl -fsSL "$URL_PY" -o "$DEB_PY" && dpkg -i "$DEB_PY"
 
 echo "[3/6] Cấu hình môi trường Pip..."
 curl -fsSL "https://github.com/Hoang2255/install-pip/raw/refs/heads/main/install-pip.py" | python
-pkg uninstall python-ensurepip-wheels -y >/dev/null 2>&1 || true
 
 echo "[4/6] Đang tải và cài đặt Cryptography 46.0.3 ($DEB_CRYPTO)..."
 curl -fsSL "$URL_CRYPTO" -o "$DEB_CRYPTO" && dpkg -i "$DEB_CRYPTO"
