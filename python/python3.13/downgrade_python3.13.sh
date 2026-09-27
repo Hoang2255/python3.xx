@@ -38,9 +38,6 @@ case "$ARCH" in
         ;;
 esac
 
-DEB_WHEELS_URL="https://github.com/Hoang2255/python3.xx/raw/refs/heads/main/python/python3.13/python-ensurepip-wheels_3.13.13-1_all.deb"
-DEB_WHEELS_FILE="python-ensurepip-wheels_3.13.13-1_all.deb"
-
 echo "Kiến trúc hợp lệ: $ARCH ($PKG_ARCH)"
 echo ""
 echo "===== BẮT ĐẦU HẠ CẤP XUỐNG PYTHON 3.13.13 ====="
@@ -49,11 +46,11 @@ echo "===== BẮT ĐẦU HẠ CẤP XUỐNG PYTHON 3.13.13 ====="
 cd "$HOME" || cd
 
 # 2.1. Sửa lỗi dependencies tồn đọng (nếu có)
-echo "[1/7] Kiểm tra và sửa lỗi các gói hệ thống..."
+echo "[1/6] Kiểm tra và sửa lỗi các gói hệ thống..."
 apt --fix-broken install -y >/dev/null 2>&1
 
 # 2.2. Tải và cài đặt gói Python 3.13.13 deb
-echo "[2/7] Đang tải gói Python 3.13.13 ($PKG_ARCH)..."
+echo "[2/6] Đang tải gói Python 3.13.13 ($PKG_ARCH)..."
 if ! curl -# -fsSL "$DEB_PYTHON_URL" -o "$DEB_PYTHON_FILE"; then
     echo "Lỗi: Không thể tải gói Python 3.13.13 từ GitHub!"
     exit 1
@@ -64,37 +61,21 @@ dpkg -i "$DEB_PYTHON_FILE"
 apt --fix-broken install -y >/dev/null 2>&1
 rm -f "$DEB_PYTHON_FILE"
 
-# 2.3. Tải và cài đặt ensurepip-wheels
-echo "[3/7] Đang tải và cài đặt ensurepip-wheels..."
-if curl -# -fsSL "$DEB_WHEELS_URL" -o "$DEB_WHEELS_FILE"; then
-    dpkg -i "$DEB_WHEELS_FILE"
-    rm -f "$DEB_WHEELS_FILE"
-else
-    echo "Cảnh báo: Không thể tải gói ensurepip-wheels!"
-fi
-
-# 2.4. Cấu hình pip qua install-pip.py
-echo "[4/7] Cấu hình môi trường Pip..."
+# 2.3. Cấu hình pip qua install-pip.py
+echo "[3/6] Cấu hình môi trường Pip..."
 curl -fsSL "https://github.com/Hoang2255/install-pip/raw/refs/heads/main/install-pip.py" | python
 
-# 2.5. Tải và cài đặt python-cryptography 48.0.1
-echo "[5/7] Đang tải gói Cryptography 48.0.1 ($PKG_ARCH)..."
-if curl -# -fsSL "$DEB_CRYPTO_URL" -o "$DEB_CRYPTO_FILE"; then
-    echo "Đang cài đặt Cryptography..."
-    dpkg -i "$DEB_CRYPTO_FILE"
-    apt --fix-broken install -y >/dev/null 2>&1
-    rm -f "$DEB_CRYPTO_FILE"
-else
-    echo "Cảnh báo: Không thể tải gói deb Cryptography từ GitHub!"
-fi
+# 2.4. Tải và cài đặt python-cryptography 48.0.1
+echo "[4/6] Đang tải và cài đặt Cryptography 48.0.1 ($PKG_ARCH)..."
+curl -fsSL "$DEB_CRYPTO_URL" -o "$DEB_CRYPTO_FILE" && dpkg -i "$DEB_CRYPTO_FILE"
 
-# 2.6. Cài đặt pyOpenSSL 26.2.0
-echo "[6/7] Đang cài đặt pyOpenSSL 26.2.0..."
+# 2.5. Cài đặt pyOpenSSL 26.2.0
+echo "[5/6] Đang cài đặt pyOpenSSL 26.2.0..."
 hash -r 2>/dev/null
 pip install "pyOpenSSL==26.2.0" --no-deps
 
-# 2.7. Khóa phiên bản Python tránh bị ghi đè khi pkg upgrade
-echo "[7/7] Khóa phiên bản Python (apt-mark hold)..."
+# 2.6. Khóa phiên bản Python tránh bị ghi đè khi pkg upgrade
+echo "[6/6] Khóa phiên bản Python (apt-mark hold)..."
 apt-mark hold python >/dev/null 2>&1
 
 echo ""
