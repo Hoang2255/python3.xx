@@ -18,7 +18,7 @@ case "$ARCH" in
         DEB_CRYPTO="python-cryptography_48.0.1_aarch64.deb"
         URL_CRYPTO="https://github.com/Hoang2255/python3.xx/raw/refs/heads/main/python/python3.13/modules/$DEB_CRYPTO"
         ;;
-    armv7l|arm)
+    armv7l|arm|armv8l)
         DEB_PY="python_3.13.13-1_arm.deb"
         URL_PY="https://github.com/Hoang2255/python3.xx/raw/refs/heads/main/python/python3.13/$DEB_PY"
         DEB_CRYPTO="python-cryptography_48.0.1_arm.deb"
@@ -67,16 +67,5 @@ rm -f "$DEB_PY" "$DEB_ENSUREPIP" "$DEB_CRYPTO"
 
 echo ""
 echo "=================================================="
-echo "Hạ xuống Python 3.13.13 thành công!"
-python --version
-pip --version
+echo "Hạ cấp Python 3.13.13 thành công!"
 echo "=================================================="
-
-# 3. Chuyển tiếp tới cài đặt modules Python
-if [ -n "$SCRIPT_DIR" ] && [ -f "$SCRIPT_DIR/install_modules.sh" ]; then
-    bash "$SCRIPT_DIR/install_modules.sh"
-elif [ -f "./install_modules.sh" ]; then
-    bash "./install_modules.sh"
-else
-    curl -fsSL https://raw.githubusercontent.com/Hoang2255/python3.xx/refs/heads/main/install_modules.sh -o install_modules.sh && chmod +x install_modules.sh && bash install_modules.sh
-fi
